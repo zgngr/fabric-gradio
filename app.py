@@ -2,10 +2,7 @@ import gradio as gr
 import os
 import yt
 
-from pydub import AudioSegment
-from functools import lru_cache
-from utils import count_lines_and_words, diff_texts, SEMANTIC_LEVELS, README
-from prompts import SPEECH_IMPROVEMENT_PROMPT, SEMANTIC_ZOOM_PROMPT
+from utils import count_lines_and_words
 from patterns import Patterns
 
 from ai.llm.llmproviderfactory import LLMProviderFactory
@@ -43,42 +40,6 @@ if os.getenv("SELF_HOST_URL"):
 if len(llmfactory.get_registered_providers()) == 0:
   raise gr.Error("No provider registered. Please provide at least one provider.")
 
-@lru_cache(maxsize=100)
-def improve_speech(transcript, provider, model, top_p, temperature): 
-  provider = llmfactory.get_provider(provider)
-  system_message = {"role": "system", "content": SPEECH_IMPROVEMENT_PROMPT}
-  user_message = {"role": "user", "content": transcript}
-  messages = [system_message, user_message]
-  
-  return provider.generate_text(model, messages, top_p, temperature)
-
-async def summarize_text(text, zoom_level, provider, model, top_p, temperature):
-  if not text:
-     raise gr.Info("Type something!")
-   
-  provider = llmfactory.get_provider(provider)
-  system_message = {"role": "system", "content": SEMANTIC_ZOOM_PROMPT}
-  user_message = {"role": "user", "content": "SUMMARY LEVEL: " + str(zoom_level) + "\n" + text}
-  messages = [system_message, user_message]
-  
-  response = ""
-  async for chunk in provider.generate_text_async(model, messages, top_p, temperature):
-      response += chunk
-      yield response
-
-def recognize_speech(audio):
-  if not audio:
-    raise gr.Error("Missing record!")
-  
-  audio_segment = AudioSegment.from_file(audio)
-  duration_seconds = len(audio_segment) / 1000
-  
-  if duration_seconds > 30 :
-    raise gr.Error( "Audio input should not be longer than 30 seconds.")
-  
-  provider = sttfactory.get_provider(OPEN_AI_WHISPER)
-  return provider.transcribe("whisper-1", audio)
-
 async def run_prompt(provider, model, prompt, input, top_p, temperature):
   if not input:
     raise gr.Info("Type something!")
@@ -104,9 +65,6 @@ def provider_changed(provider):
   
 def model_changed(model):
   return model
-    
-def zoom_level_changed(zoom_level):
-  return gr.Slider(1, 5, value=zoom_level, label=SEMANTIC_LEVELS[zoom_level], info="", interactive=True, step=1)
 
 def input_text_changed(text):
   lines_count, workds_count = count_lines_and_words(text)

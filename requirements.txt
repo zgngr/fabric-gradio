@@ -1,0 +1,7 @@
+openai
+ollama
+gradio
+groq
+pydub
+python-dotenv
+youtube_transcript_api

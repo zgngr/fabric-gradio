@@ -86,10 +86,10 @@ with gr.Blocks() as ui:
       top_p = gr.Slider(0.0, 1.0, value=0.5, label="Top P", interactive=True, step=0.1, info="Controls the diversity of the model. Lower values make the model more deterministic.")
     
   with gr.Tabs(visible=False) as main_col:
-        
-    with gr.TabItem("Prompts"):
+    prompts = Patterns().get_prompt_list()
+    with gr.TabItem(f"Prompts ({len(prompts)})"):
       with gr.Column():
-        prompt = gr.Dropdown(choices=Patterns().get_prompt_list(), interactive=True, label="Prompt")
+        prompt = gr.Dropdown(choices=prompts, interactive=True, label="Prompt")
         input_prompt = gr.Textbox(label="Text:", lines=4)
         button_prompt = gr.Button("Run")
         output_prompt = gr.Markdown(label="Output:")

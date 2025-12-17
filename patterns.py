@@ -5,8 +5,8 @@ ALLOWLIST_PATTERN = re.compile(r"^[a-zA-Z0-9\s.,;:!?\-]+$")
 
 class Patterns:
     def __init__(self):
-        self.url = "https://api.github.com/repos/zgngr/fabric/contents/patterns?ref=main"
-        self.base_url = "https://raw.githubusercontent.com/zgngr/fabric/main/patterns/"
+        self.url = "https://api.github.com/repos/zgngr/fabric/contents/data/patterns?ref=main"
+        self.base_url = "https://raw.githubusercontent.com/zgngr/fabric/main/data/patterns/"
 
     def get_prompt_list(self):
         response = requests.get(self.url, headers={"Accept": "application/vnd.github.v3+json"})

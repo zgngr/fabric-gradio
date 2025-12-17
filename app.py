@@ -11,12 +11,14 @@ from ai.llm.openaiprovider import OpenAIProvider as  OpenAIProviderLLM
 from ai.stt.openaiprovider import OpenAIProvider as OpenAIProviderSTT
 from ai.llm.selfhostprovider import SelfHostProvider
 from ai.llm.groqprovider import GroqProvider
+from ai.llm.googleprovider import GoogleProvider
+
 
 # CONSTANTS
 OPEN_AI = "OpenAI"
 OPEN_AI_WHISPER = "Whisper"
-GOOGLE = "Google"
 MISTRAL = "Mistral"
+GOOGLE = "Google"
 GROQ = "Groq"
 ANTHROPIC = "Anthropic"
 SELF_HOSTED = "Self Hosted"
@@ -33,6 +35,9 @@ if os.getenv("OPENAI_API_KEY"):
 
 if os.getenv("GROQ_API_KEY"):
   llmfactory.register_provider(GROQ, GroqProvider(os.getenv("GROQ_API_KEY")))
+
+if os.getenv("GOOGLE_API_KEY"):
+  llmfactory.register_provider(GOOGLE, GoogleProvider(os.getenv("GOOGLE_API_KEY")))
 
 if os.getenv("SELF_HOST_URL"):
   llmfactory.register_provider(SELF_HOSTED, SelfHostProvider(os.getenv("SELF_HOST_URL")))

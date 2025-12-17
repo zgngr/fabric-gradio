@@ -11,10 +11,11 @@ class YT:
 
     def youtube(self, video_id):
         try:
-            transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+            yt = YouTubeTranscriptApi()
+            transcript_list = yt.fetch(video_id)
             transcript = ""
             for segment in transcript_list:
-                transcript += segment["text"] + " "
+                transcript += segment.text + " "
             return transcript.strip()
         except Exception as e:
             print("Error:", e)
